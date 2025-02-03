@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Código de Barras Code39 (50 líneas negras)</title>
+  <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.0/dist/JsBarcode.all.min.js"></script>
+  <style>
+    /* Estilos generales */
+    body {
+      background: #f7f7f7;
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      padding: 20px 30px;
+      text-align: center;
+      max-width: 500px;
+      width: 90%;
+    }
+
+    /* Estilos del formulario */
+    label {
+      font-size: 1.1rem;
+      color: #333;
+    }
+
+    input[type="text"] {
+      padding: 8px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      width: calc(100% - 20px);
+      font-size: 1rem;
+    }
+
+    button {
+      background: #3498db;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      padding: 10px 20px;
+      margin: 10px 5px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background: #2980b9;
+    }
+
+    /* Estilos del contenedor del código de barras */
+    #barcode-container {
+      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 200px;
+      border: 1px dashed #ccc;
+      border-radius: 4px;
+      background: #fafafa;
+    }
+
+    #barcode {
+      transform-origin: center;
+      width: 600px;
+      height: 150px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <label for="dniInput">Ingrese DNI:</label>
+    <input type="text" id="dniInput" maxlength="8" placeholder="Ej: 12345678" />
+    <div>
+      <button id="generateBtn">Generar código de barras</button>
+      <button id="downloadBarBtn" style="display: none;">Descargar</button>
+    </div>
+    <div id="barcode-container">
+      <svg id="barcode"></svg>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('generateBtn').addEventListener('click', () => {
+      const dni = document.getElementById('dniInput').value.trim();
+
+      // Asegurarnos de que tenga exactamente 8 caracteres
+      if (dni.length === 8) {
+        generateBarcode(dni);
+      } else {
+        alert('Por favor, ingrese exactamente 8 caracteres.');
+      }
+    });
+
+    function generateBarcode(value) {
+      JsBarcode("#barcode", value, {
+        format: "CODE39",
+        // Sin mostrar el valor debajo (opcional):
+        displayValue: false,
+        // Ajustar grosor/altura si se desea:
+        width: 0.2,
+        height: 5,
+        margin: 5,
+        lineColor: "black",
+        background: "white"
+      });
+      document.getElementById('downloadBarBtn').style.display = 'inline-block';
+    }
+
+    document.getElementById('downloadBarBtn').addEventListener('click', () => {
+      const svg = document.getElementById('barcode');
+      const serializer = new XMLSerializer();
+      const svgBlob = new Blob([serializer.serializeToString(svg)], { type: 'image/svg+xml' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(svgBlob);
+      link.download = 'barcode_code39.svg';
+      link.click();
+    });
+  </script>
+</body>
+</html>

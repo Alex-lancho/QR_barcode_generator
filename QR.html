@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Generar QR DNI</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <style>
+    /* Estilos generales */
+    body {
+      background: #f0f2f5;
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    
+    .container {
+      background: #fff;
+      padding: 20px 30px;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      max-width: 400px;
+      width: 90%;
+    }
+
+    label {
+      font-size: 1.1rem;
+      color: #333;
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    input[type="text"] {
+      width: calc(100% - 20px);
+      padding: 8px 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 1rem;
+    }
+
+    button {
+      background: #3498db;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      padding: 10px 15px;
+      margin: 5px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background: #2980b9;
+    }
+
+    #qrContainer {
+      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 15px;
+      background: #f9f9f9;
+      border: 1px dashed #ccc;
+      border-radius: 4px;
+      min-height: 170px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <label for="dniInput">Ingrese DNI:</label>
+    <input type="text" id="dniInput" placeholder="Ej: 12345678" />
+    <div>
+      <button id="generateBtn">Generar QR</button>
+      <button id="downloadBtn" style="display: none;">Descargar Imagen</button>
+    </div>
+    <div id="qrContainer"></div>
+  </div>
+
+  <script>
+    document.getElementById('generateBtn').addEventListener('click', () => {
+      const dni = document.getElementById('dniInput').value.trim();
+      if (dni) {
+        generateQRCode(dni);
+      } else {
+        alert('Por favor, ingrese un DNI válido.');
+      }
+    });
+
+    function generateQRCode(dni) {
+      const qrContainer = document.getElementById('qrContainer');
+      qrContainer.innerHTML = ""; // Limpiar el contenedor antes de generar un nuevo QR
+      new QRCode(qrContainer, {
+        text: dni,
+        width: 150,
+        height: 150
+      });
+      document.getElementById('downloadBtn').style.display = 'inline-block';
+    }
+
+    document.getElementById('downloadBtn').addEventListener('click', () => {
+      const qrCanvas = document.querySelector('#qrContainer canvas');
+      if (qrCanvas) {
+        const link = document.createElement('a');
+        link.href = qrCanvas.toDataURL('image/png');
+        link.download = 'dni_qr.png';
+        link.click();
+      }
+    });
+  </script>
+</body>
+</html>
